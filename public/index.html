@@ -1,0 +1,827 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Verktøyregister</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #f0f2f0;
+      color: #1a1a1a;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ── TOP HEADER ── */
+    .topbar {
+      height: 52px;
+      background: #182020;
+      display: flex;
+      align-items: center;
+      padding: 0 1rem;
+      gap: 0.75rem;
+      flex-shrink: 0;
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 200;
+    }
+
+    .topbar-logo {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      color: white;
+      font-weight: 700;
+      font-size: 1.05rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .logo-circle {
+      width: 32px; height: 32px;
+      border-radius: 50%;
+      background: #2d5a3d;
+      display: flex; align-items: center; justify-content: center;
+      color: white;
+      font-weight: 800;
+      font-size: 1rem;
+      flex-shrink: 0;
+    }
+
+    .topbar-spacer { flex: 1; }
+
+    .topbar-actions {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .topbar-btn {
+      background: transparent;
+      border: 1px solid rgba(255,255,255,0.25);
+      color: rgba(255,255,255,0.85);
+      padding: 0.3rem 0.8rem;
+      border-radius: 5px;
+      font-size: 0.8rem;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+    .topbar-btn:hover { background: rgba(255,255,255,0.1); }
+
+    .topbar-icon-btn {
+      background: transparent;
+      border: none;
+      color: rgba(255,255,255,0.7);
+      width: 32px; height: 32px;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+    .topbar-icon-btn:hover { background: rgba(255,255,255,0.1); }
+
+    .avatar {
+      width: 32px; height: 32px;
+      border-radius: 50%;
+      background: #2d5a3d;
+      color: white;
+      font-weight: 700;
+      font-size: 0.85rem;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer;
+    }
+
+    /* ── LAYOUT ── */
+    .layout {
+      display: flex;
+      margin-top: 52px;
+      min-height: calc(100vh - 52px);
+    }
+
+    /* ── SIDEBAR ── */
+    .sidebar {
+      width: 200px;
+      background: #cce8cc;
+      flex-shrink: 0;
+      display: flex;
+      flex-direction: column;
+      position: fixed;
+      top: 52px;
+      left: 0;
+      bottom: 0;
+      z-index: 100;
+      border-right: 1px solid #b5d8b5;
+    }
+
+    .sidebar-context {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.8rem 1rem;
+      border-bottom: 1px solid #b5d8b5;
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: #2d4a2d;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .sidebar-context svg { opacity: 0.6; }
+
+    .nav { flex: 1; padding: 0.5rem 0; }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 0.65rem;
+      padding: 0.6rem 1rem;
+      font-size: 0.88rem;
+      color: #2d4a2d;
+      cursor: pointer;
+      border-left: 3px solid transparent;
+      transition: background 0.15s;
+    }
+
+    .nav-item:hover { background: rgba(0,0,0,0.05); }
+
+    .nav-item.aktiv {
+      background: rgba(0,0,0,0.08);
+      border-left-color: #2d5a3d;
+      font-weight: 600;
+    }
+
+    .nav-item svg { opacity: 0.65; flex-shrink: 0; }
+    .nav-item.aktiv svg { opacity: 1; }
+
+    .sidebar-footer {
+      padding: 0.75rem 1rem;
+      border-top: 1px solid #b5d8b5;
+    }
+
+    .logg-ut {
+      display: flex;
+      align-items: center;
+      gap: 0.65rem;
+      font-size: 0.88rem;
+      color: #c0392b;
+      cursor: pointer;
+      padding: 0.4rem 0;
+    }
+
+    /* ── MAIN CONTENT ── */
+    .main {
+      margin-left: 200px;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      min-height: calc(100vh - 52px);
+    }
+
+    .page { display: none; flex: 1; }
+    .page.aktiv { display: block; }
+
+    .page-header {
+      padding: 1.5rem 2rem 0;
+      margin-bottom: 1.5rem;
+    }
+
+    .page-header h1 {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: #1a2e1a;
+    }
+
+    .page-header p {
+      font-size: 0.85rem;
+      color: #6b7c6b;
+      margin-top: 0.25rem;
+    }
+
+    .content { padding: 0 2rem 2rem; }
+
+    /* ── STATS ── */
+    .stats {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+      flex-wrap: wrap;
+    }
+
+    .stat-box {
+      background: white;
+      border: 1px solid #dde8dd;
+      border-radius: 8px;
+      padding: 1rem 1.4rem;
+      flex: 1;
+      min-width: 120px;
+    }
+
+    .stat-box .num {
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: #2d5a3d;
+    }
+
+    .stat-box .lbl {
+      font-size: 0.78rem;
+      color: #6b7c6b;
+      margin-top: 0.15rem;
+    }
+
+    /* ── CARD ── */
+    .card {
+      background: white;
+      border: 1px solid #dde8dd;
+      border-radius: 8px;
+      padding: 1.5rem;
+      margin-bottom: 1.25rem;
+    }
+
+    .card-title {
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: #2d4a2d;
+      margin-bottom: 1.2rem;
+      padding-bottom: 0.75rem;
+      border-bottom: 1px solid #eef4ee;
+    }
+
+    /* ── FORM ── */
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+      gap: 1rem;
+    }
+
+    .form-group { display: flex; flex-direction: column; gap: 0.35rem; }
+
+    .form-group label {
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: #4a5e4a;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    input, select {
+      padding: 0.5rem 0.75rem;
+      border: 1px solid #c8d8c8;
+      border-radius: 6px;
+      font-size: 0.9rem;
+      background: white;
+      color: #1a1a1a;
+      transition: border-color 0.15s, box-shadow 0.15s;
+    }
+
+    input:focus, select:focus {
+      outline: none;
+      border-color: #2d5a3d;
+      box-shadow: 0 0 0 3px rgba(45,90,61,0.12);
+    }
+
+    .btn-row { margin-top: 1.25rem; display: flex; gap: 0.75rem; }
+
+    button {
+      padding: 0.55rem 1.25rem;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.88rem;
+      font-weight: 600;
+      transition: background 0.15s, transform 0.1s;
+    }
+
+    button:active { transform: scale(0.97); }
+
+    .btn-primary { background: #2d5a3d; color: white; }
+    .btn-primary:hover { background: #245033; }
+    .btn-secondary { background: #eef4ee; color: #2d4a2d; border: 1px solid #c8d8c8; }
+    .btn-secondary:hover { background: #e0ece0; }
+    .btn-danger { background: #fee2e2; color: #991b1b; padding: 0.3rem 0.75rem; font-size: 0.8rem; border: 1px solid #fca5a5; }
+    .btn-danger:hover { background: #fecaca; }
+    .btn-edit { background: #fef3c7; color: #92400e; padding: 0.3rem 0.75rem; font-size: 0.8rem; border: 1px solid #fcd34d; }
+    .btn-edit:hover { background: #fde68a; }
+
+    /* ── SEARCH ── */
+    .search-row {
+      display: flex;
+      gap: 0.75rem;
+      margin-bottom: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .search-row input { flex: 1; min-width: 200px; }
+    .search-row select { min-width: 160px; }
+
+    /* ── TABLE ── */
+    .table-wrap { overflow-x: auto; }
+
+    table { width: 100%; border-collapse: collapse; }
+
+    th {
+      text-align: left;
+      padding: 0.65rem 1rem;
+      background: #f4f8f4;
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: #4a5e4a;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      border-bottom: 2px solid #dde8dd;
+    }
+
+    td {
+      padding: 0.8rem 1rem;
+      border-bottom: 1px solid #eef4ee;
+      font-size: 0.88rem;
+    }
+
+    tr:last-child td { border-bottom: none; }
+    tr:hover td { background: #f9fcf9; }
+
+    /* ── STATUS BADGE ── */
+    .badge {
+      display: inline-block;
+      padding: 0.2rem 0.65rem;
+      border-radius: 999px;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+
+    .badge-tilgjengelig { background: #dcfce7; color: #166534; }
+    .badge-utlant       { background: #fef9c3; color: #854d0e; }
+    .badge-reparasjon   { background: #fee2e2; color: #991b1b; }
+    .badge-kassert      { background: #f3f4f6; color: #6b7280; }
+
+    /* ── EMPTY ── */
+    .empty {
+      text-align: center;
+      padding: 3rem 1rem;
+      color: #9ca3af;
+      font-size: 0.9rem;
+    }
+
+    /* ── MODAL ── */
+    .modal-backdrop {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.35);
+      z-index: 500;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .modal-backdrop.aktiv { display: flex; }
+
+    .modal {
+      background: white;
+      border-radius: 10px;
+      padding: 1.75rem;
+      width: 100%;
+      max-width: 560px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.18);
+    }
+
+    .modal h2 {
+      font-size: 1rem;
+      font-weight: 700;
+      color: #1a2e1a;
+      margin-bottom: 1.25rem;
+      padding-bottom: 0.75rem;
+      border-bottom: 1px solid #eef4ee;
+    }
+
+    /* ── TOAST ── */
+    .toast {
+      position: fixed;
+      bottom: 1.5rem;
+      right: 1.5rem;
+      background: #2d5a3d;
+      color: white;
+      padding: 0.7rem 1.1rem;
+      border-radius: 7px;
+      font-size: 0.88rem;
+      box-shadow: 0 4px 14px rgba(0,0,0,0.2);
+      opacity: 0;
+      transition: opacity 0.25s;
+      pointer-events: none;
+      z-index: 999;
+    }
+
+    .toast.show { opacity: 1; }
+
+    /* ── FOOTER ── */
+    footer {
+      font-size: 0.75rem;
+      color: #6b7c6b;
+      text-align: right;
+      padding: 0.75rem 2rem;
+      border-top: 1px solid #dde8dd;
+      background: white;
+    }
+  </style>
+</head>
+<body>
+
+<!-- TOP HEADER -->
+<div class="topbar">
+  <div class="topbar-logo">
+    <div class="logo-circle">V</div>
+    Verktøyreg
+  </div>
+  <div class="topbar-spacer"></div>
+  <div class="topbar-actions">
+    <button class="topbar-btn">Hjelp</button>
+    <div class="avatar">BK</div>
+  </div>
+</div>
+
+<!-- LAYOUT -->
+<div class="layout">
+
+  <!-- SIDEBAR -->
+  <nav class="sidebar">
+    <div class="sidebar-context">
+      <span>Min bedrift</span>
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+    </div>
+
+    <div class="nav">
+      <div class="nav-item aktiv" onclick="byttSide('oversikt', this)">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+        Oversikt
+      </div>
+      <div class="nav-item" onclick="byttSide('verktoy', this)">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
+        Verktøyliste
+      </div>
+      <div class="nav-item" onclick="byttSide('registrer', this)">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+        Registrer
+      </div>
+    </div>
+
+    <div class="sidebar-footer">
+      <div class="logg-ut">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+        Logg ut
+      </div>
+    </div>
+  </nav>
+
+  <!-- MAIN -->
+  <main class="main">
+
+    <!-- OVERSIKT -->
+    <div class="page aktiv" id="side-oversikt">
+      <div class="page-header">
+        <h1>Oversikt</h1>
+        <p>Status for verktøyregisteret</p>
+      </div>
+      <div class="content">
+        <div class="stats">
+          <div class="stat-box"><div class="num" id="statTotal">0</div><div class="lbl">Totalt registrert</div></div>
+          <div class="stat-box"><div class="num" id="statTilgjengelig">0</div><div class="lbl">Tilgjengelig</div></div>
+          <div class="stat-box"><div class="num" id="statUtlant">0</div><div class="lbl">Utlånt</div></div>
+          <div class="stat-box"><div class="num" id="statReparasjon">0</div><div class="lbl">Til reparasjon</div></div>
+        </div>
+
+        <div class="card">
+          <div class="card-title">Siste registrerte verktøy</div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Navn</th>
+                  <th>Merke</th>
+                  <th>Status</th>
+                  <th>Innkjøpsdato</th>
+                </tr>
+              </thead>
+              <tbody id="sisteTabell"></tbody>
+            </table>
+          </div>
+          <div id="ingenSiste" class="empty" style="display:none;">Ingen verktøy registrert ennå</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- VERKTØYLISTE -->
+    <div class="page" id="side-verktoy">
+      <div class="page-header">
+        <h1>Verktøyliste</h1>
+        <p>Alle registrerte verktøy</p>
+      </div>
+      <div class="content">
+        <div class="card">
+          <div class="search-row">
+            <input type="text" id="sok" placeholder="Søk på navn, merke eller serienummer...">
+            <select id="filterStatus">
+              <option value="">Alle statuser</option>
+              <option value="tilgjengelig">Tilgjengelig</option>
+              <option value="utlant">Utlånt</option>
+              <option value="reparasjon">Til reparasjon</option>
+              <option value="kassert">Kassert</option>
+            </select>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Navn</th>
+                  <th>Merke</th>
+                  <th>Serienummer</th>
+                  <th>Innkjøpsdato</th>
+                  <th>Pris</th>
+                  <th>Status</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody id="verktoyTabell"></tbody>
+            </table>
+          </div>
+          <div id="ingenVerktoy" class="empty" style="display:none;">Ingen verktøy funnet</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- REGISTRER -->
+    <div class="page" id="side-registrer">
+      <div class="page-header">
+        <h1>Registrer verktøy</h1>
+        <p>Legg til et nytt verktøy i registeret</p>
+      </div>
+      <div class="content">
+        <div class="card">
+          <div class="card-title">Verktøyinformasjon</div>
+          <form id="skjema">
+            <div class="form-grid">
+              <div class="form-group">
+                <label for="navn">Navn *</label>
+                <input type="text" id="navn" placeholder="f.eks. Borhammer" required>
+              </div>
+              <div class="form-group">
+                <label for="merke">Merke *</label>
+                <input type="text" id="merke" placeholder="f.eks. Bosch" required>
+              </div>
+              <div class="form-group">
+                <label for="serienummer">Serienummer</label>
+                <input type="text" id="serienummer" placeholder="f.eks. SN-12345">
+              </div>
+              <div class="form-group">
+                <label for="innkjopsdato">Innkjøpsdato</label>
+                <input type="date" id="innkjopsdato">
+              </div>
+              <div class="form-group">
+                <label for="pris">Pris (kr)</label>
+                <input type="number" id="pris" placeholder="f.eks. 1499" min="0" step="0.01">
+              </div>
+              <div class="form-group">
+                <label for="status">Status</label>
+                <select id="status">
+                  <option value="tilgjengelig">Tilgjengelig</option>
+                  <option value="utlant">Utlånt</option>
+                  <option value="reparasjon">Til reparasjon</option>
+                  <option value="kassert">Kassert</option>
+                </select>
+              </div>
+            </div>
+            <div class="btn-row">
+              <button type="submit" class="btn-primary">Legg til verktøy</button>
+              <button type="button" class="btn-secondary" onclick="document.getElementById('skjema').reset()">Nullstill</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <footer>Innlogget: bruker@bedrift.no &nbsp;|&nbsp; &copy; 2026 Verktøyregister</footer>
+  </main>
+</div>
+
+<!-- REDIGER MODAL -->
+<div class="modal-backdrop" id="redigerModal">
+  <div class="modal">
+    <h2>Rediger verktøy</h2>
+    <input type="hidden" id="redigerId">
+    <div class="form-grid">
+      <div class="form-group">
+        <label>Navn *</label>
+        <input type="text" id="redigerNavn">
+      </div>
+      <div class="form-group">
+        <label>Merke *</label>
+        <input type="text" id="redigerMerke">
+      </div>
+      <div class="form-group">
+        <label>Serienummer</label>
+        <input type="text" id="redigerSerienummer">
+      </div>
+      <div class="form-group">
+        <label>Innkjøpsdato</label>
+        <input type="date" id="redigerInnkjopsdato">
+      </div>
+      <div class="form-group">
+        <label>Pris (kr)</label>
+        <input type="number" id="redigerPris" min="0" step="0.01">
+      </div>
+      <div class="form-group">
+        <label>Status</label>
+        <select id="redigerStatus">
+          <option value="tilgjengelig">Tilgjengelig</option>
+          <option value="utlant">Utlånt</option>
+          <option value="reparasjon">Til reparasjon</option>
+          <option value="kassert">Kassert</option>
+        </select>
+      </div>
+    </div>
+    <div class="btn-row">
+      <button class="btn-primary" onclick="lagreRedigering()">Lagre endringer</button>
+      <button class="btn-secondary" onclick="lukkModal()">Avbryt</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+  let alleVerktoy = [];
+
+  const statusLabels = {
+    tilgjengelig: 'Tilgjengelig',
+    utlant: 'Utlånt',
+    reparasjon: 'Til reparasjon',
+    kassert: 'Kassert'
+  };
+
+  function byttSide(id, el) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('aktiv'));
+    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('aktiv'));
+    document.getElementById('side-' + id).classList.add('aktiv');
+    if (el) el.classList.add('aktiv');
+  }
+
+  async function lastVerktoy() {
+    const res = await fetch('/api/verktoy');
+    alleVerktoy = await res.json();
+    oppdaterStatistikk();
+    visVerktoy();
+    visSiste();
+  }
+
+  function oppdaterStatistikk() {
+    document.getElementById('statTotal').textContent = alleVerktoy.length;
+    document.getElementById('statTilgjengelig').textContent = alleVerktoy.filter(v => v.status === 'tilgjengelig').length;
+    document.getElementById('statUtlant').textContent = alleVerktoy.filter(v => v.status === 'utlant').length;
+    document.getElementById('statReparasjon').textContent = alleVerktoy.filter(v => v.status === 'reparasjon').length;
+  }
+
+  function visSiste() {
+    const siste = alleVerktoy.slice(0, 5);
+    const el = document.getElementById('sisteTabell');
+    const ingen = document.getElementById('ingenSiste');
+    if (siste.length === 0) { el.innerHTML = ''; ingen.style.display = ''; return; }
+    ingen.style.display = 'none';
+    el.innerHTML = siste.map(v => `
+      <tr>
+        <td><strong>${esc(v.navn)}</strong></td>
+        <td>${esc(v.merke)}</td>
+        <td><span class="badge badge-${v.status}">${statusLabels[v.status] || v.status}</span></td>
+        <td>${v.innkjopsdato ? fmtDato(v.innkjopsdato) : '<span style="color:#ccc">—</span>'}</td>
+      </tr>
+    `).join('');
+  }
+
+  function visVerktoy() {
+    const sok = document.getElementById('sok').value.toLowerCase();
+    const filter = document.getElementById('filterStatus').value;
+    const filtrert = alleVerktoy.filter(v => {
+      const matchSok = !sok ||
+        v.navn.toLowerCase().includes(sok) ||
+        v.merke.toLowerCase().includes(sok) ||
+        (v.serienummer || '').toLowerCase().includes(sok);
+      return matchSok && (!filter || v.status === filter);
+    });
+
+    const kropp = document.getElementById('verktoyTabell');
+    const ingen = document.getElementById('ingenVerktoy');
+
+    if (filtrert.length === 0) { kropp.innerHTML = ''; ingen.style.display = ''; return; }
+    ingen.style.display = 'none';
+
+    kropp.innerHTML = filtrert.map(v => `
+      <tr>
+        <td><strong>${esc(v.navn)}</strong></td>
+        <td>${esc(v.merke)}</td>
+        <td>${v.serienummer ? esc(v.serienummer) : '<span style="color:#ccc">—</span>'}</td>
+        <td>${v.innkjopsdato ? fmtDato(v.innkjopsdato) : '<span style="color:#ccc">—</span>'}</td>
+        <td>${v.pris != null ? 'kr ' + Number(v.pris).toLocaleString('nb-NO', {minimumFractionDigits: 2}) : '<span style="color:#ccc">—</span>'}</td>
+        <td><span class="badge badge-${v.status}">${statusLabels[v.status] || v.status}</span></td>
+        <td style="white-space:nowrap">
+          <button class="btn-edit" onclick='apneRediger(${JSON.stringify(v)})'>Rediger</button>
+          <button class="btn-danger" onclick="slettVerktoy(${v.id})">Slett</button>
+        </td>
+      </tr>
+    `).join('');
+  }
+
+  document.getElementById('skjema').addEventListener('submit', async e => {
+    e.preventDefault();
+    const data = {
+      navn: document.getElementById('navn').value.trim(),
+      merke: document.getElementById('merke').value.trim(),
+      serienummer: document.getElementById('serienummer').value.trim(),
+      innkjopsdato: document.getElementById('innkjopsdato').value,
+      pris: document.getElementById('pris').value ? parseFloat(document.getElementById('pris').value) : null,
+      status: document.getElementById('status').value
+    };
+    const res = await fetch('/api/verktoy', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data)
+    });
+    if (res.ok) {
+      document.getElementById('skjema').reset();
+      await lastVerktoy();
+      visToast('Verktøy lagt til!');
+      byttSide('verktoy', document.querySelectorAll('.nav-item')[1]);
+    }
+  });
+
+  document.getElementById('sok').addEventListener('input', visVerktoy);
+  document.getElementById('filterStatus').addEventListener('change', visVerktoy);
+
+  async function slettVerktoy(id) {
+    if (!confirm('Er du sikker på at du vil slette dette verktøyet?')) return;
+    await fetch(`/api/verktoy/${id}`, { method: 'DELETE' });
+    await lastVerktoy();
+    visToast('Verktøy slettet');
+  }
+
+  function apneRediger(v) {
+    document.getElementById('redigerId').value = v.id;
+    document.getElementById('redigerNavn').value = v.navn;
+    document.getElementById('redigerMerke').value = v.merke;
+    document.getElementById('redigerSerienummer').value = v.serienummer || '';
+    document.getElementById('redigerInnkjopsdato').value = v.innkjopsdato || '';
+    document.getElementById('redigerPris').value = v.pris != null ? v.pris : '';
+    document.getElementById('redigerStatus').value = v.status;
+    document.getElementById('redigerModal').classList.add('aktiv');
+  }
+
+  function lukkModal() {
+    document.getElementById('redigerModal').classList.remove('aktiv');
+  }
+
+  async function lagreRedigering() {
+    const id = document.getElementById('redigerId').value;
+    const data = {
+      navn: document.getElementById('redigerNavn').value.trim(),
+      merke: document.getElementById('redigerMerke').value.trim(),
+      serienummer: document.getElementById('redigerSerienummer').value.trim(),
+      innkjopsdato: document.getElementById('redigerInnkjopsdato').value,
+      pris: document.getElementById('redigerPris').value ? parseFloat(document.getElementById('redigerPris').value) : null,
+      status: document.getElementById('redigerStatus').value
+    };
+    const res = await fetch(`/api/verktoy/${id}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data)
+    });
+    if (res.ok) {
+      lukkModal();
+      await lastVerktoy();
+      visToast('Endringer lagret!');
+    }
+  }
+
+  document.getElementById('redigerModal').addEventListener('click', e => {
+    if (e.target === document.getElementById('redigerModal')) lukkModal();
+  });
+
+  function visToast(melding) {
+    const t = document.getElementById('toast');
+    t.textContent = melding;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 2500);
+  }
+
+  function fmtDato(d) {
+    if (!d) return '—';
+    const [y, m, dd] = d.split('-');
+    return `${dd}.${m}.${y}`;
+  }
+
+  function esc(s) {
+    return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+
+  lastVerktoy();
+</script>
+</body>
+</html>
