@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Verktøyregister</title>
+  <title>Tilbudsbygger</title>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -37,8 +37,7 @@
       color: white;
       font-weight: 700;
       font-size: 1.05rem;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
+      letter-spacing: 0.06em;
     }
 
     .logo-circle {
@@ -54,11 +53,7 @@
 
     .topbar-spacer { flex: 1; }
 
-    .topbar-actions {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-    }
+    .topbar-actions { display: flex; align-items: center; gap: 0.5rem; }
 
     .topbar-btn {
       background: transparent;
@@ -72,18 +67,6 @@
     }
     .topbar-btn:hover { background: rgba(255,255,255,0.1); }
 
-    .topbar-icon-btn {
-      background: transparent;
-      border: none;
-      color: rgba(255,255,255,0.7);
-      width: 32px; height: 32px;
-      border-radius: 50%;
-      display: flex; align-items: center; justify-content: center;
-      cursor: pointer;
-      transition: background 0.15s;
-    }
-    .topbar-icon-btn:hover { background: rgba(255,255,255,0.1); }
-
     .avatar {
       width: 32px; height: 32px;
       border-radius: 50%;
@@ -92,15 +75,10 @@
       font-weight: 700;
       font-size: 0.85rem;
       display: flex; align-items: center; justify-content: center;
-      cursor: pointer;
     }
 
     /* ── LAYOUT ── */
-    .layout {
-      display: flex;
-      margin-top: 52px;
-      min-height: calc(100vh - 52px);
-    }
+    .layout { display: flex; margin-top: 52px; min-height: calc(100vh - 52px); }
 
     /* ── SIDEBAR ── */
     .sidebar {
@@ -110,9 +88,7 @@
       display: flex;
       flex-direction: column;
       position: fixed;
-      top: 52px;
-      left: 0;
-      bottom: 0;
+      top: 52px; left: 0; bottom: 0;
       z-index: 100;
       border-right: 1px solid #b5d8b5;
     }
@@ -126,11 +102,7 @@
       font-size: 0.82rem;
       font-weight: 600;
       color: #2d4a2d;
-      cursor: pointer;
-      user-select: none;
     }
-
-    .sidebar-context svg { opacity: 0.6; }
 
     .nav { flex: 1; padding: 0.5rem 0; }
 
@@ -144,23 +116,15 @@
       cursor: pointer;
       border-left: 3px solid transparent;
       transition: background 0.15s;
+      user-select: none;
     }
 
     .nav-item:hover { background: rgba(0,0,0,0.05); }
-
-    .nav-item.aktiv {
-      background: rgba(0,0,0,0.08);
-      border-left-color: #2d5a3d;
-      font-weight: 600;
-    }
-
+    .nav-item.aktiv { background: rgba(0,0,0,0.08); border-left-color: #2d5a3d; font-weight: 600; }
     .nav-item svg { opacity: 0.65; flex-shrink: 0; }
     .nav-item.aktiv svg { opacity: 1; }
 
-    .sidebar-footer {
-      padding: 0.75rem 1rem;
-      border-top: 1px solid #b5d8b5;
-    }
+    .sidebar-footer { padding: 0.75rem 1rem; border-top: 1px solid #b5d8b5; }
 
     .logg-ut {
       display: flex;
@@ -172,7 +136,7 @@
       padding: 0.4rem 0;
     }
 
-    /* ── MAIN CONTENT ── */
+    /* ── MAIN ── */
     .main {
       margin-left: 200px;
       flex: 1;
@@ -184,53 +148,11 @@
     .page { display: none; flex: 1; }
     .page.aktiv { display: block; }
 
-    .page-header {
-      padding: 1.5rem 2rem 0;
-      margin-bottom: 1.5rem;
-    }
-
-    .page-header h1 {
-      font-size: 1.25rem;
-      font-weight: 700;
-      color: #1a2e1a;
-    }
-
-    .page-header p {
-      font-size: 0.85rem;
-      color: #6b7c6b;
-      margin-top: 0.25rem;
-    }
+    .page-header { padding: 1.5rem 2rem 0; margin-bottom: 1.5rem; }
+    .page-header h1 { font-size: 1.25rem; font-weight: 700; color: #1a2e1a; }
+    .page-header p { font-size: 0.85rem; color: #6b7c6b; margin-top: 0.25rem; }
 
     .content { padding: 0 2rem 2rem; }
-
-    /* ── STATS ── */
-    .stats {
-      display: flex;
-      gap: 1rem;
-      margin-bottom: 1.5rem;
-      flex-wrap: wrap;
-    }
-
-    .stat-box {
-      background: white;
-      border: 1px solid #dde8dd;
-      border-radius: 8px;
-      padding: 1rem 1.4rem;
-      flex: 1;
-      min-width: 120px;
-    }
-
-    .stat-box .num {
-      font-size: 1.8rem;
-      font-weight: 700;
-      color: #2d5a3d;
-    }
-
-    .stat-box .lbl {
-      font-size: 0.78rem;
-      color: #6b7c6b;
-      margin-top: 0.15rem;
-    }
 
     /* ── CARD ── */
     .card {
@@ -250,41 +172,48 @@
       border-bottom: 1px solid #eef4ee;
     }
 
-    /* ── FORM ── */
-    .form-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
-      gap: 1rem;
-    }
+    /* ── STATS ── */
+    .stats { display: flex; gap: 1rem; margin-bottom: 1.5rem; flex-wrap: wrap; }
 
-    .form-group { display: flex; flex-direction: column; gap: 0.35rem; }
-
-    .form-group label {
-      font-size: 0.78rem;
-      font-weight: 600;
-      color: #4a5e4a;
-      text-transform: uppercase;
-      letter-spacing: 0.04em;
-    }
-
-    input, select {
-      padding: 0.5rem 0.75rem;
-      border: 1px solid #c8d8c8;
-      border-radius: 6px;
-      font-size: 0.9rem;
+    .stat-box {
       background: white;
-      color: #1a1a1a;
-      transition: border-color 0.15s, box-shadow 0.15s;
+      border: 1px solid #dde8dd;
+      border-radius: 8px;
+      padding: 1rem 1.4rem;
+      flex: 1;
+      min-width: 120px;
     }
 
-    input:focus, select:focus {
-      outline: none;
-      border-color: #2d5a3d;
-      box-shadow: 0 0 0 3px rgba(45,90,61,0.12);
+    .stat-box .num { font-size: 1.8rem; font-weight: 700; color: #2d5a3d; }
+    .stat-box .lbl { font-size: 0.78rem; color: #6b7c6b; margin-top: 0.15rem; }
+
+    /* ── UPLOAD AREA ── */
+    .upload-area {
+      border: 2px dashed #b5d8b5;
+      border-radius: 10px;
+      padding: 3rem 2rem;
+      text-align: center;
+      background: #f8fcf8;
+      transition: border-color 0.2s, background 0.2s;
+      cursor: pointer;
+      margin-bottom: 1.25rem;
     }
 
-    .btn-row { margin-top: 1.25rem; display: flex; gap: 0.75rem; }
+    .upload-area:hover { border-color: #2d5a3d; background: #f0f8f0; }
 
+    .upload-area svg { color: #6b9c6b; margin-bottom: 0.75rem; }
+    .upload-area h3 { font-size: 1rem; color: #2d4a2d; margin-bottom: 0.4rem; }
+    .upload-area p { font-size: 0.85rem; color: #6b7c6b; }
+
+    .upload-actions {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      margin-top: 1.25rem;
+      flex-wrap: wrap;
+    }
+
+    /* ── BUTTONS ── */
     button {
       padding: 0.55rem 1.25rem;
       border: none;
@@ -301,21 +230,59 @@
     .btn-primary:hover { background: #245033; }
     .btn-secondary { background: #eef4ee; color: #2d4a2d; border: 1px solid #c8d8c8; }
     .btn-secondary:hover { background: #e0ece0; }
+    .btn-demo { background: #1a3a8f; color: white; display: flex; align-items: center; gap: 0.5rem; }
+    .btn-demo:hover { background: #152e72; }
     .btn-danger { background: #fee2e2; color: #991b1b; padding: 0.3rem 0.75rem; font-size: 0.8rem; border: 1px solid #fca5a5; }
     .btn-danger:hover { background: #fecaca; }
-    .btn-edit { background: #fef3c7; color: #92400e; padding: 0.3rem 0.75rem; font-size: 0.8rem; border: 1px solid #fcd34d; }
-    .btn-edit:hover { background: #fde68a; }
+    .btn-sm { padding: 0.3rem 0.75rem; font-size: 0.8rem; }
 
-    /* ── SEARCH ── */
-    .search-row {
-      display: flex;
-      gap: 0.75rem;
-      margin-bottom: 1rem;
-      flex-wrap: wrap;
+    /* ── LOADER ── */
+    .loader {
+      display: none;
+      text-align: center;
+      padding: 2rem;
     }
 
-    .search-row input { flex: 1; min-width: 200px; }
-    .search-row select { min-width: 160px; }
+    .loader.aktiv { display: block; }
+
+    .spinner {
+      width: 40px; height: 40px;
+      border: 3px solid #eef4ee;
+      border-top-color: #2d5a3d;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      margin: 0 auto 1rem;
+    }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .loader p { color: #6b7c6b; font-size: 0.9rem; }
+
+    /* ── RESULTAT ── */
+    .resultat { display: none; }
+    .resultat.aktiv { display: block; }
+
+    .resultat-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 1.25rem;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+    }
+
+    .resultat-header h2 { font-size: 1.1rem; font-weight: 700; color: #1a2e1a; }
+
+    .tilbud-tekst {
+      font-size: 0.92rem;
+      line-height: 1.7;
+      color: #2d3a2d;
+      white-space: pre-wrap;
+      margin-bottom: 1.5rem;
+    }
+
+    .tilbud-seksjon { margin-bottom: 1.5rem; }
+    .tilbud-seksjon h3 { font-size: 0.88rem; font-weight: 700; color: #2d4a2d; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.75rem; }
 
     /* ── TABLE ── */
     .table-wrap { overflow-x: auto; }
@@ -335,7 +302,7 @@
     }
 
     td {
-      padding: 0.8rem 1rem;
+      padding: 0.75rem 1rem;
       border-bottom: 1px solid #eef4ee;
       font-size: 0.88rem;
     }
@@ -343,7 +310,16 @@
     tr:last-child td { border-bottom: none; }
     tr:hover td { background: #f9fcf9; }
 
-    /* ── STATUS BADGE ── */
+    td.tall { text-align: right; font-variant-numeric: tabular-nums; }
+    th.tall { text-align: right; }
+
+    .total-rad td {
+      font-weight: 700;
+      border-top: 2px solid #dde8dd;
+      background: #f4f8f4;
+    }
+
+    /* ── BADGE ── */
     .badge {
       display: inline-block;
       padding: 0.2rem 0.65rem;
@@ -352,18 +328,36 @@
       font-weight: 600;
     }
 
-    .badge-tilgjengelig { background: #dcfce7; color: #166534; }
-    .badge-utlant       { background: #fef9c3; color: #854d0e; }
-    .badge-reparasjon   { background: #fee2e2; color: #991b1b; }
-    .badge-kassert      { background: #f3f4f6; color: #6b7280; }
+    .badge-utkast    { background: #fef9c3; color: #854d0e; }
+    .badge-sendt     { background: #dbeafe; color: #1e40af; }
+    .badge-godkjent  { background: #dcfce7; color: #166534; }
+    .badge-avslatt   { background: #fee2e2; color: #991b1b; }
+
+    /* ── FORM ── */
+    .form-group { display: flex; flex-direction: column; gap: 0.35rem; margin-bottom: 1rem; }
+    .form-group label { font-size: 0.78rem; font-weight: 600; color: #4a5e4a; text-transform: uppercase; letter-spacing: 0.04em; }
+
+    input, select {
+      padding: 0.5rem 0.75rem;
+      border: 1px solid #c8d8c8;
+      border-radius: 6px;
+      font-size: 0.9rem;
+      background: white;
+      color: #1a1a1a;
+      transition: border-color 0.15s, box-shadow 0.15s;
+    }
+
+    input:focus, select:focus {
+      outline: none;
+      border-color: #2d5a3d;
+      box-shadow: 0 0 0 3px rgba(45,90,61,0.12);
+    }
+
+    .search-row { display: flex; gap: 0.75rem; margin-bottom: 1rem; flex-wrap: wrap; }
+    .search-row input { flex: 1; min-width: 200px; }
 
     /* ── EMPTY ── */
-    .empty {
-      text-align: center;
-      padding: 3rem 1rem;
-      color: #9ca3af;
-      font-size: 0.9rem;
-    }
+    .empty { text-align: center; padding: 3rem 1rem; color: #9ca3af; font-size: 0.9rem; }
 
     /* ── MODAL ── */
     .modal-backdrop {
@@ -372,8 +366,10 @@
       inset: 0;
       background: rgba(0,0,0,0.35);
       z-index: 500;
-      align-items: center;
+      align-items: flex-start;
       justify-content: center;
+      padding: 2rem 1rem;
+      overflow-y: auto;
     }
 
     .modal-backdrop.aktiv { display: flex; }
@@ -383,24 +379,27 @@
       border-radius: 10px;
       padding: 1.75rem;
       width: 100%;
-      max-width: 560px;
+      max-width: 760px;
       box-shadow: 0 8px 32px rgba(0,0,0,0.18);
+      margin: auto;
     }
 
-    .modal h2 {
-      font-size: 1rem;
-      font-weight: 700;
-      color: #1a2e1a;
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
       margin-bottom: 1.25rem;
       padding-bottom: 0.75rem;
       border-bottom: 1px solid #eef4ee;
     }
 
+    .modal-header h2 { font-size: 1rem; font-weight: 700; color: #1a2e1a; }
+    .modal-close { background: none; border: none; font-size: 1.4rem; color: #9ca3af; cursor: pointer; padding: 0; line-height: 1; }
+
     /* ── TOAST ── */
     .toast {
       position: fixed;
-      bottom: 1.5rem;
-      right: 1.5rem;
+      bottom: 1.5rem; right: 1.5rem;
       background: #2d5a3d;
       color: white;
       padding: 0.7rem 1.1rem;
@@ -415,7 +414,6 @@
 
     .toast.show { opacity: 1; }
 
-    /* ── FOOTER ── */
     footer {
       font-size: 0.75rem;
       color: #6b7c6b;
@@ -428,11 +426,10 @@
 </head>
 <body>
 
-<!-- TOP HEADER -->
 <div class="topbar">
   <div class="topbar-logo">
-    <div class="logo-circle">V</div>
-    Verktøyreg
+    <div class="logo-circle">T</div>
+    Tilbudsbygger
   </div>
   <div class="topbar-spacer"></div>
   <div class="topbar-actions">
@@ -441,31 +438,27 @@
   </div>
 </div>
 
-<!-- LAYOUT -->
 <div class="layout">
 
-  <!-- SIDEBAR -->
   <nav class="sidebar">
     <div class="sidebar-context">
       <span>Min bedrift</span>
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
     </div>
-
     <div class="nav">
       <div class="nav-item aktiv" onclick="byttSide('oversikt', this)">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
         Oversikt
       </div>
-      <div class="nav-item" onclick="byttSide('verktoy', this)">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
-        Verktøyliste
-      </div>
-      <div class="nav-item" onclick="byttSide('registrer', this)">
+      <div class="nav-item" onclick="byttSide('nytt', this)">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
-        Registrer
+        Nytt tilbud
+      </div>
+      <div class="nav-item" onclick="byttSide('liste', this)">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+        Tilbudsliste
       </div>
     </div>
-
     <div class="sidebar-footer">
       <div class="logg-ut">
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
@@ -474,191 +467,247 @@
     </div>
   </nav>
 
-  <!-- MAIN -->
   <main class="main">
 
     <!-- OVERSIKT -->
     <div class="page aktiv" id="side-oversikt">
       <div class="page-header">
         <h1>Oversikt</h1>
-        <p>Status for verktøyregisteret</p>
+        <p>Status for dine tilbud</p>
       </div>
       <div class="content">
         <div class="stats">
-          <div class="stat-box"><div class="num" id="statTotal">0</div><div class="lbl">Totalt registrert</div></div>
-          <div class="stat-box"><div class="num" id="statTilgjengelig">0</div><div class="lbl">Tilgjengelig</div></div>
-          <div class="stat-box"><div class="num" id="statUtlant">0</div><div class="lbl">Utlånt</div></div>
-          <div class="stat-box"><div class="num" id="statReparasjon">0</div><div class="lbl">Til reparasjon</div></div>
+          <div class="stat-box"><div class="num" id="statTotal">0</div><div class="lbl">Totalt</div></div>
+          <div class="stat-box"><div class="num" id="statUtkast">0</div><div class="lbl">Utkast</div></div>
+          <div class="stat-box"><div class="num" id="statSendt">0</div><div class="lbl">Sendt</div></div>
+          <div class="stat-box"><div class="num" id="statGodkjent">0</div><div class="lbl">Godkjent</div></div>
         </div>
-
         <div class="card">
-          <div class="card-title">Siste registrerte verktøy</div>
+          <div class="card-title">Siste tilbud</div>
           <div class="table-wrap">
             <table>
-              <thead>
-                <tr>
-                  <th>Navn</th>
-                  <th>Merke</th>
-                  <th>Status</th>
-                  <th>Innkjøpsdato</th>
-                </tr>
-              </thead>
+              <thead><tr><th>Prosjekt</th><th>Kunde</th><th>Status</th><th>Opprettet</th><th class="tall">Total</th></tr></thead>
               <tbody id="sisteTabell"></tbody>
             </table>
           </div>
-          <div id="ingenSiste" class="empty" style="display:none;">Ingen verktøy registrert ennå</div>
+          <div id="ingenSiste" class="empty" style="display:none;">Ingen tilbud opprettet ennå</div>
         </div>
       </div>
     </div>
 
-    <!-- VERKTØYLISTE -->
-    <div class="page" id="side-verktoy">
+    <!-- NYTT TILBUD -->
+    <div class="page" id="side-nytt">
       <div class="page-header">
-        <h1>Verktøyliste</h1>
-        <p>Alle registrerte verktøy</p>
+        <h1>Nytt tilbud</h1>
+        <p>Last opp en PDF eller bruk demo for å generere et tilbud med AI</p>
+      </div>
+      <div class="content">
+
+        <div id="steg-upload">
+          <div class="upload-area" onclick="document.getElementById('pdfInput').click()">
+            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="18" x2="12" y2="12"/><line x1="9" y1="15" x2="15" y2="15"/></svg>
+            <h3>Dra og slipp PDF her</h3>
+            <p>eller klikk for å velge fil</p>
+            <input type="file" id="pdfInput" accept=".pdf" style="display:none" onchange="velgPDF(this)">
+          </div>
+
+          <div class="upload-actions">
+            <button class="btn-demo" onclick="kjorDemo()">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+              Last inn demo PDF
+            </button>
+            <span style="align-self:center; color:#9ca3af; font-size:0.85rem;">— eller last opp egen PDF ovenfor</span>
+          </div>
+        </div>
+
+        <div class="loader" id="loader">
+          <div class="spinner"></div>
+          <p>AI analyserer dokumentet og genererer tilbud…</p>
+        </div>
+
+        <div class="resultat" id="resultat">
+          <div class="card">
+            <div class="resultat-header">
+              <div>
+                <h2 id="resultatTittel"></h2>
+                <p style="font-size:0.82rem; color:#6b7c6b; margin-top:0.2rem;" id="resultatKunde"></p>
+              </div>
+              <div style="display:flex; gap:0.75rem; flex-wrap:wrap;">
+                <button class="btn-secondary btn-sm" onclick="nullstill()">Nytt tilbud</button>
+                <button class="btn-primary btn-sm" onclick="lagreTilbud()">Lagre tilbud</button>
+              </div>
+            </div>
+
+            <div class="tilbud-tekst" id="tilbudTekst"></div>
+
+            <div class="tilbud-seksjon">
+              <h3>Utstyr og materiell</h3>
+              <div class="table-wrap">
+                <table id="utstyrTabell">
+                  <thead><tr><th>Beskrivelse</th><th>Antall</th><th class="tall">Enhetspris</th><th class="tall">Sum</th></tr></thead>
+                  <tbody id="utstyrKropp"></tbody>
+                </table>
+              </div>
+            </div>
+
+            <div class="tilbud-seksjon">
+              <h3>Timer</h3>
+              <div class="table-wrap">
+                <table id="timerTabell">
+                  <thead><tr><th>Arbeidstype</th><th class="tall">Timer</th><th class="tall">Timepris</th><th class="tall">Sum</th></tr></thead>
+                  <tbody id="timerKropp"></tbody>
+                </table>
+              </div>
+            </div>
+
+            <div class="table-wrap">
+              <table>
+                <tbody>
+                  <tr class="total-rad">
+                    <td colspan="3" style="font-size:0.95rem;">Total eksl. mva</td>
+                    <td class="tall" id="totalPris"></td>
+                  </tr>
+                  <tr class="total-rad">
+                    <td colspan="3" style="font-size:0.95rem;">MVA (25%)</td>
+                    <td class="tall" id="totalMva"></td>
+                  </tr>
+                  <tr class="total-rad">
+                    <td colspan="3" style="font-size:1.05rem; color:#2d5a3d;">Total inkl. mva</td>
+                    <td class="tall" style="font-size:1.05rem; color:#2d5a3d;" id="totalInklMva"></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- TILBUDSLISTE -->
+    <div class="page" id="side-liste">
+      <div class="page-header">
+        <h1>Tilbudsliste</h1>
+        <p>Alle genererte tilbud</p>
       </div>
       <div class="content">
         <div class="card">
           <div class="search-row">
-            <input type="text" id="sok" placeholder="Søk på navn, merke eller serienummer...">
-            <select id="filterStatus">
+            <input type="text" id="sok" placeholder="Søk på prosjekt eller kunde...">
+            <select id="filterStatus" style="min-width:160px;">
               <option value="">Alle statuser</option>
-              <option value="tilgjengelig">Tilgjengelig</option>
-              <option value="utlant">Utlånt</option>
-              <option value="reparasjon">Til reparasjon</option>
-              <option value="kassert">Kassert</option>
+              <option value="utkast">Utkast</option>
+              <option value="sendt">Sendt</option>
+              <option value="godkjent">Godkjent</option>
+              <option value="avslatt">Avslått</option>
             </select>
           </div>
           <div class="table-wrap">
             <table>
-              <thead>
-                <tr>
-                  <th>Navn</th>
-                  <th>Merke</th>
-                  <th>Serienummer</th>
-                  <th>Innkjøpsdato</th>
-                  <th>Pris</th>
-                  <th>Status</th>
-                  <th></th>
-                </tr>
-              </thead>
-              <tbody id="verktoyTabell"></tbody>
+              <thead><tr><th>Prosjekt</th><th>Kunde</th><th>Status</th><th>Opprettet</th><th class="tall">Total</th><th></th></tr></thead>
+              <tbody id="listeTabell"></tbody>
             </table>
           </div>
-          <div id="ingenVerktoy" class="empty" style="display:none;">Ingen verktøy funnet</div>
+          <div id="ingenListe" class="empty" style="display:none;">Ingen tilbud funnet</div>
         </div>
       </div>
     </div>
 
-    <!-- REGISTRER -->
-    <div class="page" id="side-registrer">
-      <div class="page-header">
-        <h1>Registrer verktøy</h1>
-        <p>Legg til et nytt verktøy i registeret</p>
-      </div>
-      <div class="content">
-        <div class="card">
-          <div class="card-title">Verktøyinformasjon</div>
-          <form id="skjema">
-            <div class="form-grid">
-              <div class="form-group">
-                <label for="navn">Navn *</label>
-                <input type="text" id="navn" placeholder="f.eks. Borhammer" required>
-              </div>
-              <div class="form-group">
-                <label for="merke">Merke *</label>
-                <input type="text" id="merke" placeholder="f.eks. Bosch" required>
-              </div>
-              <div class="form-group">
-                <label for="serienummer">Serienummer</label>
-                <input type="text" id="serienummer" placeholder="f.eks. SN-12345">
-              </div>
-              <div class="form-group">
-                <label for="innkjopsdato">Innkjøpsdato</label>
-                <input type="date" id="innkjopsdato">
-              </div>
-              <div class="form-group">
-                <label for="pris">Pris (kr)</label>
-                <input type="number" id="pris" placeholder="f.eks. 1499" min="0" step="0.01">
-              </div>
-              <div class="form-group">
-                <label for="status">Status</label>
-                <select id="status">
-                  <option value="tilgjengelig">Tilgjengelig</option>
-                  <option value="utlant">Utlånt</option>
-                  <option value="reparasjon">Til reparasjon</option>
-                  <option value="kassert">Kassert</option>
-                </select>
-              </div>
-            </div>
-            <div class="btn-row">
-              <button type="submit" class="btn-primary">Legg til verktøy</button>
-              <button type="button" class="btn-secondary" onclick="document.getElementById('skjema').reset()">Nullstill</button>
-            </div>
-          </form>
-        </div>
-      </div>
-    </div>
-
-    <footer>Innlogget: bruker@bedrift.no &nbsp;|&nbsp; &copy; 2026 Verktøyregister</footer>
+    <footer>Tilbudsbygger &nbsp;|&nbsp; &copy; 2026</footer>
   </main>
 </div>
 
-<!-- REDIGER MODAL -->
-<div class="modal-backdrop" id="redigerModal">
+<!-- VISNINGSMODAL -->
+<div class="modal-backdrop" id="visModal">
   <div class="modal">
-    <h2>Rediger verktøy</h2>
-    <input type="hidden" id="redigerId">
-    <div class="form-grid">
-      <div class="form-group">
-        <label>Navn *</label>
-        <input type="text" id="redigerNavn">
-      </div>
-      <div class="form-group">
-        <label>Merke *</label>
-        <input type="text" id="redigerMerke">
-      </div>
-      <div class="form-group">
-        <label>Serienummer</label>
-        <input type="text" id="redigerSerienummer">
-      </div>
-      <div class="form-group">
-        <label>Innkjøpsdato</label>
-        <input type="date" id="redigerInnkjopsdato">
-      </div>
-      <div class="form-group">
-        <label>Pris (kr)</label>
-        <input type="number" id="redigerPris" min="0" step="0.01">
-      </div>
-      <div class="form-group">
-        <label>Status</label>
-        <select id="redigerStatus">
-          <option value="tilgjengelig">Tilgjengelig</option>
-          <option value="utlant">Utlånt</option>
-          <option value="reparasjon">Til reparasjon</option>
-          <option value="kassert">Kassert</option>
-        </select>
+    <div class="modal-header">
+      <h2 id="modalTittel"></h2>
+      <button class="modal-close" onclick="lukkModal()">×</button>
+    </div>
+    <p style="font-size:0.82rem; color:#6b7c6b; margin-bottom:1.25rem;" id="modalKunde"></p>
+
+    <div class="tilbud-tekst" id="modalTekst"></div>
+
+    <div class="tilbud-seksjon">
+      <h3>Utstyr og materiell</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Beskrivelse</th><th>Antall</th><th class="tall">Enhetspris</th><th class="tall">Sum</th></tr></thead>
+          <tbody id="modalUtstyr"></tbody>
+        </table>
       </div>
     </div>
-    <div class="btn-row">
-      <button class="btn-primary" onclick="lagreRedigering()">Lagre endringer</button>
-      <button class="btn-secondary" onclick="lukkModal()">Avbryt</button>
+
+    <div class="tilbud-seksjon">
+      <h3>Timer</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Arbeidstype</th><th class="tall">Timer</th><th class="tall">Timepris</th><th class="tall">Sum</th></tr></thead>
+          <tbody id="modalTimer"></tbody>
+        </table>
+      </div>
     </div>
+
+    <table style="width:100%;">
+      <tbody>
+        <tr class="total-rad"><td colspan="3">Total eksl. mva</td><td class="tall" id="modalTotal"></td></tr>
+        <tr class="total-rad"><td colspan="3">MVA (25%)</td><td class="tall" id="modalMva"></td></tr>
+        <tr class="total-rad"><td colspan="3" style="color:#2d5a3d;">Total inkl. mva</td><td class="tall" style="color:#2d5a3d;" id="modalInklMva"></td></tr>
+      </tbody>
+    </table>
+
+    <div style="display:flex; gap:0.75rem; margin-top:1.5rem; flex-wrap:wrap; align-items:center;">
+      <label style="font-size:0.82rem; font-weight:600; color:#4a5e4a;">Status:</label>
+      <select id="modalStatus" style="min-width:140px;" onchange="oppdaterStatus()">
+        <option value="utkast">Utkast</option>
+        <option value="sendt">Sendt</option>
+        <option value="godkjent">Godkjent</option>
+        <option value="avslatt">Avslått</option>
+      </select>
+      <div style="flex:1;"></div>
+      <button class="btn-danger" onclick="slettFraModal()">Slett tilbud</button>
+    </div>
+    <input type="hidden" id="modalId">
   </div>
 </div>
 
 <div class="toast" id="toast"></div>
 
 <script>
-  let alleVerktoy = [];
+  // ── DEMO DATA ──
+  const DEMO = {
+    prosjektnavn: 'Elektrisk anlegg — Lagerbygg Østre Porsgrunn',
+    kunde: 'Hansen Bygg AS',
+    tekst: `Vi viser til mottatt forespørsel og takker for muligheten til å gi tilbud på elektrisk installasjon for nytt lagerbygg på Østre Porsgrunn.
 
-  const statusLabels = {
-    tilgjengelig: 'Tilgjengelig',
-    utlant: 'Utlånt',
-    reparasjon: 'Til reparasjon',
-    kassert: 'Kassert'
+Tilbudet omfatter komplett elektrisk anlegg inkludert hovedtavle, fordeling, belysning, stikkontakter og utebelysning i henhold til vedlagte tegninger og gjeldende forskrifter (FEL og NEK 400).
+
+Alle arbeider utføres av autorisert elektroinstallatør og vil bli dokumentert med samsvarserklæring ved ferdigstillelse. Garanti på utført arbeid er 5 år.
+
+Oppstart kan skje innen 2 uker etter bestilling, med estimert gjennomføringstid på 3 uker.`,
+    utstyr: [
+      { beskrivelse: 'Hovedtavle 3-fase 63A med overspenningsvern', antall: 1, enhetspris: 18500 },
+      { beskrivelse: 'Fordelingstavle underetasje 3-fase 40A', antall: 2, enhetspris: 8200 },
+      { beskrivelse: 'LED Highbay armatur 150W IP65', antall: 24, enhetspris: 1850 },
+      { beskrivelse: 'LED utearmatur vegg 40W med bevegelsessensor', antall: 8, enhetspris: 1200 },
+      { beskrivelse: 'Stikkontakt 230V IP44 dobbel', antall: 32, enhetspris: 420 },
+      { beskrivelse: 'Kabelkanal 60x40mm hvit (meter)', antall: 180, enhetspris: 85 },
+      { beskrivelse: 'NYM-J 3x2,5mm² (meter)', antall: 600, enhetspris: 22 },
+      { beskrivelse: 'NYM-J 5x6mm² (meter)', antall: 120, enhetspris: 68 },
+    ],
+    timer: [
+      { beskrivelse: 'Installasjon hovedtavle og tilkobling', timer: 16, timepris: 895 },
+      { beskrivelse: 'Trekking og tilkobling kabling', timer: 80, timepris: 895 },
+      { beskrivelse: 'Montering belysning og armaturer', timer: 32, timepris: 895 },
+      { beskrivelse: 'Stikkontakter og tilbehør', timer: 24, timepris: 895 },
+      { beskrivelse: 'Testing, måling og dokumentasjon', timer: 12, timepris: 995 },
+    ]
   };
 
+  let alleTilbud = [];
+  let aktivtTilbud = null;
+
+  // ── NAVIGASJON ──
   function byttSide(id, el) {
     document.querySelectorAll('.page').forEach(p => p.classList.remove('aktiv'));
     document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('aktiv'));
@@ -666,162 +715,249 @@
     if (el) el.classList.add('aktiv');
   }
 
-  async function lastVerktoy() {
-    const res = await fetch('/api/verktoy');
-    alleVerktoy = await res.json();
+  // ── DATA ──
+  async function lastTilbud() {
+    const res = await fetch('/api/tilbud');
+    alleTilbud = await res.json().then(list => list.map(t => ({
+      ...t,
+      utstyr: t.utstyr ? JSON.parse(t.utstyr) : [],
+      timer: t.timer ? JSON.parse(t.timer) : []
+    })));
     oppdaterStatistikk();
-    visVerktoy();
+    visListe();
     visSiste();
   }
 
   function oppdaterStatistikk() {
-    document.getElementById('statTotal').textContent = alleVerktoy.length;
-    document.getElementById('statTilgjengelig').textContent = alleVerktoy.filter(v => v.status === 'tilgjengelig').length;
-    document.getElementById('statUtlant').textContent = alleVerktoy.filter(v => v.status === 'utlant').length;
-    document.getElementById('statReparasjon').textContent = alleVerktoy.filter(v => v.status === 'reparasjon').length;
+    document.getElementById('statTotal').textContent = alleTilbud.length;
+    document.getElementById('statUtkast').textContent = alleTilbud.filter(t => t.status === 'utkast').length;
+    document.getElementById('statSendt').textContent = alleTilbud.filter(t => t.status === 'sendt').length;
+    document.getElementById('statGodkjent').textContent = alleTilbud.filter(t => t.status === 'godkjent').length;
   }
 
   function visSiste() {
-    const siste = alleVerktoy.slice(0, 5);
+    const siste = alleTilbud.slice(0, 5);
     const el = document.getElementById('sisteTabell');
     const ingen = document.getElementById('ingenSiste');
     if (siste.length === 0) { el.innerHTML = ''; ingen.style.display = ''; return; }
     ingen.style.display = 'none';
-    el.innerHTML = siste.map(v => `
-      <tr>
-        <td><strong>${esc(v.navn)}</strong></td>
-        <td>${esc(v.merke)}</td>
-        <td><span class="badge badge-${v.status}">${statusLabels[v.status] || v.status}</span></td>
-        <td>${v.innkjopsdato ? fmtDato(v.innkjopsdato) : '<span style="color:#ccc">—</span>'}</td>
+    el.innerHTML = siste.map(t => `
+      <tr style="cursor:pointer" onclick='apneModal(${t.id})'>
+        <td><strong>${esc(t.prosjektnavn)}</strong></td>
+        <td>${t.kunde ? esc(t.kunde) : '<span style="color:#ccc">—</span>'}</td>
+        <td><span class="badge badge-${t.status}">${statusLabel(t.status)}</span></td>
+        <td>${fmtDato(t.opprettet)}</td>
+        <td class="tall">${t.total_pris ? 'kr ' + fmt(t.total_pris) : '—'}</td>
       </tr>
     `).join('');
   }
 
-  function visVerktoy() {
+  function visListe() {
     const sok = document.getElementById('sok').value.toLowerCase();
     const filter = document.getElementById('filterStatus').value;
-    const filtrert = alleVerktoy.filter(v => {
-      const matchSok = !sok ||
-        v.navn.toLowerCase().includes(sok) ||
-        v.merke.toLowerCase().includes(sok) ||
-        (v.serienummer || '').toLowerCase().includes(sok);
-      return matchSok && (!filter || v.status === filter);
+    const filtrert = alleTilbud.filter(t => {
+      const matchSok = !sok || t.prosjektnavn.toLowerCase().includes(sok) || (t.kunde || '').toLowerCase().includes(sok);
+      return matchSok && (!filter || t.status === filter);
     });
 
-    const kropp = document.getElementById('verktoyTabell');
-    const ingen = document.getElementById('ingenVerktoy');
-
-    if (filtrert.length === 0) { kropp.innerHTML = ''; ingen.style.display = ''; return; }
+    const el = document.getElementById('listeTabell');
+    const ingen = document.getElementById('ingenListe');
+    if (filtrert.length === 0) { el.innerHTML = ''; ingen.style.display = ''; return; }
     ingen.style.display = 'none';
-
-    kropp.innerHTML = filtrert.map(v => `
+    el.innerHTML = filtrert.map(t => `
       <tr>
-        <td><strong>${esc(v.navn)}</strong></td>
-        <td>${esc(v.merke)}</td>
-        <td>${v.serienummer ? esc(v.serienummer) : '<span style="color:#ccc">—</span>'}</td>
-        <td>${v.innkjopsdato ? fmtDato(v.innkjopsdato) : '<span style="color:#ccc">—</span>'}</td>
-        <td>${v.pris != null ? 'kr ' + Number(v.pris).toLocaleString('nb-NO', {minimumFractionDigits: 2}) : '<span style="color:#ccc">—</span>'}</td>
-        <td><span class="badge badge-${v.status}">${statusLabels[v.status] || v.status}</span></td>
-        <td style="white-space:nowrap">
-          <button class="btn-edit" onclick='apneRediger(${JSON.stringify(v)})'>Rediger</button>
-          <button class="btn-danger" onclick="slettVerktoy(${v.id})">Slett</button>
-        </td>
+        <td><strong>${esc(t.prosjektnavn)}</strong></td>
+        <td>${t.kunde ? esc(t.kunde) : '<span style="color:#ccc">—</span>'}</td>
+        <td><span class="badge badge-${t.status}">${statusLabel(t.status)}</span></td>
+        <td>${fmtDato(t.opprettet)}</td>
+        <td class="tall">${t.total_pris ? 'kr ' + fmt(t.total_pris) : '—'}</td>
+        <td><button class="btn-secondary btn-sm" onclick="apneModal(${t.id})">Vis</button></td>
       </tr>
     `).join('');
   }
 
-  document.getElementById('skjema').addEventListener('submit', async e => {
-    e.preventDefault();
-    const data = {
-      navn: document.getElementById('navn').value.trim(),
-      merke: document.getElementById('merke').value.trim(),
-      serienummer: document.getElementById('serienummer').value.trim(),
-      innkjopsdato: document.getElementById('innkjopsdato').value,
-      pris: document.getElementById('pris').value ? parseFloat(document.getElementById('pris').value) : null,
-      status: document.getElementById('status').value
-    };
-    const res = await fetch('/api/verktoy', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(data)
-    });
-    if (res.ok) {
-      document.getElementById('skjema').reset();
-      await lastVerktoy();
-      visToast('Verktøy lagt til!');
-      byttSide('verktoy', document.querySelectorAll('.nav-item')[1]);
-    }
-  });
+  document.getElementById('sok').addEventListener('input', visListe);
+  document.getElementById('filterStatus').addEventListener('change', visListe);
 
-  document.getElementById('sok').addEventListener('input', visVerktoy);
-  document.getElementById('filterStatus').addEventListener('change', visVerktoy);
+  // ── DEMO ──
+  function kjorDemo() {
+    document.getElementById('steg-upload').style.display = 'none';
+    document.getElementById('loader').classList.add('aktiv');
+    document.getElementById('resultat').classList.remove('aktiv');
 
-  async function slettVerktoy(id) {
-    if (!confirm('Er du sikker på at du vil slette dette verktøyet?')) return;
-    await fetch(`/api/verktoy/${id}`, { method: 'DELETE' });
-    await lastVerktoy();
-    visToast('Verktøy slettet');
+    setTimeout(() => {
+      document.getElementById('loader').classList.remove('aktiv');
+      visResultat(DEMO);
+    }, 2200);
   }
 
-  function apneRediger(v) {
-    document.getElementById('redigerId').value = v.id;
-    document.getElementById('redigerNavn').value = v.navn;
-    document.getElementById('redigerMerke').value = v.merke;
-    document.getElementById('redigerSerienummer').value = v.serienummer || '';
-    document.getElementById('redigerInnkjopsdato').value = v.innkjopsdato || '';
-    document.getElementById('redigerPris').value = v.pris != null ? v.pris : '';
-    document.getElementById('redigerStatus').value = v.status;
-    document.getElementById('redigerModal').classList.add('aktiv');
+  function velgPDF(input) {
+    if (input.files[0]) kjorDemo();
+  }
+
+  function visResultat(data) {
+    aktivtTilbud = data;
+
+    document.getElementById('resultatTittel').textContent = data.prosjektnavn;
+    document.getElementById('resultatKunde').textContent = data.kunde || '';
+    document.getElementById('tilbudTekst').textContent = data.tekst;
+
+    const uPris = data.utstyr.reduce((s, u) => s + u.antall * u.enhetspris, 0);
+    const tPris = data.timer.reduce((s, t) => s + t.timer * t.timepris, 0);
+    const total = uPris + tPris;
+    const mva = total * 0.25;
+
+    document.getElementById('utstyrKropp').innerHTML = data.utstyr.map(u => `
+      <tr>
+        <td>${esc(u.beskrivelse)}</td>
+        <td>${u.antall}</td>
+        <td class="tall">kr ${fmt(u.enhetspris)}</td>
+        <td class="tall">kr ${fmt(u.antall * u.enhetspris)}</td>
+      </tr>
+    `).join('');
+
+    document.getElementById('timerKropp').innerHTML = data.timer.map(t => `
+      <tr>
+        <td>${esc(t.beskrivelse)}</td>
+        <td class="tall">${t.timer}</td>
+        <td class="tall">kr ${fmt(t.timepris)}</td>
+        <td class="tall">kr ${fmt(t.timer * t.timepris)}</td>
+      </tr>
+    `).join('');
+
+    document.getElementById('totalPris').textContent = 'kr ' + fmt(total);
+    document.getElementById('totalMva').textContent = 'kr ' + fmt(mva);
+    document.getElementById('totalInklMva').textContent = 'kr ' + fmt(total + mva);
+
+    document.getElementById('resultat').classList.add('aktiv');
+  }
+
+  async function lagreTilbud() {
+    if (!aktivtTilbud) return;
+    const uPris = aktivtTilbud.utstyr.reduce((s, u) => s + u.antall * u.enhetspris, 0);
+    const tPris = aktivtTilbud.timer.reduce((s, t) => s + t.timer * t.timepris, 0);
+    const res = await fetch('/api/tilbud', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        prosjektnavn: aktivtTilbud.prosjektnavn,
+        kunde: aktivtTilbud.kunde,
+        generert_tekst: aktivtTilbud.tekst,
+        utstyr: JSON.stringify(aktivtTilbud.utstyr),
+        timer: JSON.stringify(aktivtTilbud.timer),
+        total_pris: uPris + tPris,
+        status: 'utkast'
+      })
+    });
+    if (res.ok) {
+      await lastTilbud();
+      nullstill();
+      byttSide('liste', document.querySelectorAll('.nav-item')[2]);
+      visToast('Tilbud lagret!');
+    }
+  }
+
+  function nullstill() {
+    aktivtTilbud = null;
+    document.getElementById('steg-upload').style.display = '';
+    document.getElementById('resultat').classList.remove('aktiv');
+    document.getElementById('pdfInput').value = '';
+  }
+
+  // ── MODAL ──
+  function apneModal(id) {
+    const t = alleTilbud.find(x => x.id === id);
+    if (!t) return;
+    document.getElementById('modalId').value = id;
+    document.getElementById('modalTittel').textContent = t.prosjektnavn;
+    document.getElementById('modalKunde').textContent = t.kunde || '';
+    document.getElementById('modalTekst').textContent = t.generert_tekst || '';
+    document.getElementById('modalStatus').value = t.status;
+
+    document.getElementById('modalUtstyr').innerHTML = (t.utstyr || []).map(u => `
+      <tr>
+        <td>${esc(u.beskrivelse)}</td>
+        <td>${u.antall}</td>
+        <td class="tall">kr ${fmt(u.enhetspris)}</td>
+        <td class="tall">kr ${fmt(u.antall * u.enhetspris)}</td>
+      </tr>
+    `).join('');
+
+    document.getElementById('modalTimer').innerHTML = (t.timer || []).map(x => `
+      <tr>
+        <td>${esc(x.beskrivelse)}</td>
+        <td class="tall">${x.timer}</td>
+        <td class="tall">kr ${fmt(x.timepris)}</td>
+        <td class="tall">kr ${fmt(x.timer * x.timepris)}</td>
+      </tr>
+    `).join('');
+
+    const total = t.total_pris || 0;
+    const mva = total * 0.25;
+    document.getElementById('modalTotal').textContent = 'kr ' + fmt(total);
+    document.getElementById('modalMva').textContent = 'kr ' + fmt(mva);
+    document.getElementById('modalInklMva').textContent = 'kr ' + fmt(total + mva);
+
+    document.getElementById('visModal').classList.add('aktiv');
   }
 
   function lukkModal() {
-    document.getElementById('redigerModal').classList.remove('aktiv');
+    document.getElementById('visModal').classList.remove('aktiv');
   }
 
-  async function lagreRedigering() {
-    const id = document.getElementById('redigerId').value;
-    const data = {
-      navn: document.getElementById('redigerNavn').value.trim(),
-      merke: document.getElementById('redigerMerke').value.trim(),
-      serienummer: document.getElementById('redigerSerienummer').value.trim(),
-      innkjopsdato: document.getElementById('redigerInnkjopsdato').value,
-      pris: document.getElementById('redigerPris').value ? parseFloat(document.getElementById('redigerPris').value) : null,
-      status: document.getElementById('redigerStatus').value
-    };
-    const res = await fetch(`/api/verktoy/${id}`, {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(data)
-    });
-    if (res.ok) {
-      lukkModal();
-      await lastVerktoy();
-      visToast('Endringer lagret!');
-    }
-  }
-
-  document.getElementById('redigerModal').addEventListener('click', e => {
-    if (e.target === document.getElementById('redigerModal')) lukkModal();
+  document.getElementById('visModal').addEventListener('click', e => {
+    if (e.target === document.getElementById('visModal')) lukkModal();
   });
 
-  function visToast(melding) {
-    const t = document.getElementById('toast');
-    t.textContent = melding;
-    t.classList.add('show');
-    setTimeout(() => t.classList.remove('show'), 2500);
+  async function oppdaterStatus() {
+    const id = document.getElementById('modalId').value;
+    const status = document.getElementById('modalStatus').value;
+    const t = alleTilbud.find(x => x.id == id);
+    if (!t) return;
+    await fetch(`/api/tilbud/${id}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ ...t, utstyr: JSON.stringify(t.utstyr), timer: JSON.stringify(t.timer), status })
+    });
+    await lastTilbud();
+    visToast('Status oppdatert');
   }
 
-  function fmtDato(d) {
-    if (!d) return '—';
-    const [y, m, dd] = d.split('-');
-    return `${dd}.${m}.${y}`;
+  async function slettFraModal() {
+    const id = document.getElementById('modalId').value;
+    if (!confirm('Slette dette tilbudet?')) return;
+    await fetch(`/api/tilbud/${id}`, { method: 'DELETE' });
+    lukkModal();
+    await lastTilbud();
+    visToast('Tilbud slettet');
+  }
+
+  // ── HJELP ──
+  function statusLabel(s) {
+    return { utkast: 'Utkast', sendt: 'Sendt', godkjent: 'Godkjent', avslatt: 'Avslått' }[s] || s;
+  }
+
+  function fmt(n) {
+    return Number(n).toLocaleString('nb-NO', { minimumFractionDigits: 0, maximumFractionDigits: 0 });
+  }
+
+  function fmtDato(s) {
+    if (!s) return '—';
+    return s.slice(0, 10).split('-').reverse().join('.');
   }
 
   function esc(s) {
     return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
   }
 
-  lastVerktoy();
+  function visToast(m) {
+    const t = document.getElementById('toast');
+    t.textContent = m;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 2500);
+  }
+
+  lastTilbud();
 </script>
 </body>
 </html>
