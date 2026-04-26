@@ -319,6 +319,52 @@
       background: #f4f8f4;
     }
 
+    /* ── REDIGERBARE TABELLER ── */
+    .tabell-input {
+      width: 100%;
+      border: 1px solid transparent;
+      border-radius: 4px;
+      padding: 0.2rem 0.4rem;
+      font-size: 0.88rem;
+      font-family: inherit;
+      background: transparent;
+      color: #1a1a1a;
+      transition: border-color 0.15s, background 0.15s;
+    }
+
+    .tabell-input:hover { border-color: #c8d8c8; background: #f8fcf8; }
+    .tabell-input:focus { outline: none; border-color: #2d5a3d; background: white; box-shadow: 0 0 0 2px rgba(45,90,61,0.1); }
+    .tabell-input.tall { text-align: right; }
+
+    .fjern-rad {
+      background: none;
+      border: none;
+      color: #ccc;
+      cursor: pointer;
+      font-size: 1.1rem;
+      padding: 0 0.3rem;
+      line-height: 1;
+      transition: color 0.15s;
+    }
+
+    .fjern-rad:hover { color: #ef4444; background: none; transform: none; }
+
+    .legg-til-rad {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-size: 0.82rem;
+      color: #2d5a3d;
+      cursor: pointer;
+      background: none;
+      border: none;
+      padding: 0.5rem 0;
+      font-weight: 600;
+      transition: opacity 0.15s;
+    }
+
+    .legg-til-rad:hover { opacity: 0.7; background: none; transform: none; }
+
     /* ── BADGE ── */
     .badge {
       display: inline-block;
@@ -544,20 +590,28 @@
               <h3>Utstyr og materiell</h3>
               <div class="table-wrap">
                 <table id="utstyrTabell">
-                  <thead><tr><th>Beskrivelse</th><th>Antall</th><th class="tall">Enhetspris</th><th class="tall">Sum</th></tr></thead>
+                  <thead><tr><th>Beskrivelse</th><th style="width:70px">Antall</th><th class="tall" style="width:120px">Enhetspris</th><th class="tall" style="width:110px">Sum</th><th style="width:32px"></th></tr></thead>
                   <tbody id="utstyrKropp"></tbody>
                 </table>
               </div>
+              <button class="legg-til-rad" onclick="leggTilUtstyrRad()">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+                Legg til linje
+              </button>
             </div>
 
             <div class="tilbud-seksjon">
               <h3>Timer</h3>
               <div class="table-wrap">
                 <table id="timerTabell">
-                  <thead><tr><th>Arbeidstype</th><th class="tall">Timer</th><th class="tall">Timepris</th><th class="tall">Sum</th></tr></thead>
+                  <thead><tr><th>Arbeidstype</th><th class="tall" style="width:80px">Timer</th><th class="tall" style="width:120px">Timepris</th><th class="tall" style="width:110px">Sum</th><th style="width:32px"></th></tr></thead>
                   <tbody id="timerKropp"></tbody>
                 </table>
               </div>
+              <button class="legg-til-rad" onclick="leggTilTimerRad()">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+                Legg til linje
+              </button>
             </div>
 
             <div class="table-wrap">
@@ -795,47 +849,120 @@ Oppstart kan skje innen 2 uker etter bestilling, med estimert gjennomføringstid
     if (input.files[0]) kjorDemo();
   }
 
+  function utstyrRad(u = {}) {
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td><input class="tabell-input" type="text" placeholder="Beskrivelse" value="${esc(u.beskrivelse || '')}"></td>
+      <td><input class="tabell-input tall" type="number" min="0" step="1" value="${u.antall ?? ''}" placeholder="0"></td>
+      <td><input class="tabell-input tall" type="number" min="0" step="1" value="${u.enhetspris ?? ''}" placeholder="0"></td>
+      <td class="tall sum-celle">—</td>
+      <td><button class="fjern-rad" onclick="fjernRad(this)" title="Fjern linje">×</button></td>
+    `;
+    tr.querySelectorAll('input').forEach(i => i.addEventListener('input', regnUtTotal));
+    return tr;
+  }
+
+  function timerRad(t = {}) {
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td><input class="tabell-input" type="text" placeholder="Arbeidstype" value="${esc(t.beskrivelse || '')}"></td>
+      <td><input class="tabell-input tall" type="number" min="0" step="0.5" value="${t.timer ?? ''}" placeholder="0"></td>
+      <td><input class="tabell-input tall" type="number" min="0" step="1" value="${t.timepris ?? ''}" placeholder="0"></td>
+      <td class="tall sum-celle">—</td>
+      <td><button class="fjern-rad" onclick="fjernRad(this)" title="Fjern linje">×</button></td>
+    `;
+    tr.querySelectorAll('input').forEach(i => i.addEventListener('input', regnUtTotal));
+    return tr;
+  }
+
+  function leggTilUtstyrRad() {
+    document.getElementById('utstyrKropp').appendChild(utstyrRad());
+    regnUtTotal();
+  }
+
+  function leggTilTimerRad() {
+    document.getElementById('timerKropp').appendChild(timerRad());
+    regnUtTotal();
+  }
+
+  function fjernRad(btn) {
+    btn.closest('tr').remove();
+    regnUtTotal();
+  }
+
+  function regnUtTotal() {
+    let uTotal = 0;
+    document.querySelectorAll('#utstyrKropp tr').forEach(tr => {
+      const [, antallEl, prisEl] = tr.querySelectorAll('input');
+      const sum = (parseFloat(antallEl.value) || 0) * (parseFloat(prisEl.value) || 0);
+      tr.querySelector('.sum-celle').textContent = sum ? 'kr ' + fmt(sum) : '—';
+      uTotal += sum;
+    });
+
+    let tTotal = 0;
+    document.querySelectorAll('#timerKropp tr').forEach(tr => {
+      const [, timerEl, prisEl] = tr.querySelectorAll('input');
+      const sum = (parseFloat(timerEl.value) || 0) * (parseFloat(prisEl.value) || 0);
+      tr.querySelector('.sum-celle').textContent = sum ? 'kr ' + fmt(sum) : '—';
+      tTotal += sum;
+    });
+
+    const total = uTotal + tTotal;
+    const mva = total * 0.25;
+    document.getElementById('totalPris').textContent = 'kr ' + fmt(total);
+    document.getElementById('totalMva').textContent = 'kr ' + fmt(mva);
+    document.getElementById('totalInklMva').textContent = 'kr ' + fmt(total + mva);
+  }
+
   function visResultat(data) {
     aktivtTilbud = data;
-
     document.getElementById('resultatTittel').textContent = data.prosjektnavn;
     document.getElementById('resultatKunde').textContent = data.kunde || '';
     document.getElementById('tilbudTekst').textContent = data.tekst;
 
-    const uPris = data.utstyr.reduce((s, u) => s + u.antall * u.enhetspris, 0);
-    const tPris = data.timer.reduce((s, t) => s + t.timer * t.timepris, 0);
-    const total = uPris + tPris;
-    const mva = total * 0.25;
+    const uKropp = document.getElementById('utstyrKropp');
+    const tKropp = document.getElementById('timerKropp');
+    uKropp.innerHTML = '';
+    tKropp.innerHTML = '';
 
-    document.getElementById('utstyrKropp').innerHTML = data.utstyr.map(u => `
-      <tr>
-        <td>${esc(u.beskrivelse)}</td>
-        <td>${u.antall}</td>
-        <td class="tall">kr ${fmt(u.enhetspris)}</td>
-        <td class="tall">kr ${fmt(u.antall * u.enhetspris)}</td>
-      </tr>
-    `).join('');
+    data.utstyr.forEach(u => uKropp.appendChild(utstyrRad(u)));
+    data.timer.forEach(t => tKropp.appendChild(timerRad(t)));
 
-    document.getElementById('timerKropp').innerHTML = data.timer.map(t => `
-      <tr>
-        <td>${esc(t.beskrivelse)}</td>
-        <td class="tall">${t.timer}</td>
-        <td class="tall">kr ${fmt(t.timepris)}</td>
-        <td class="tall">kr ${fmt(t.timer * t.timepris)}</td>
-      </tr>
-    `).join('');
-
-    document.getElementById('totalPris').textContent = 'kr ' + fmt(total);
-    document.getElementById('totalMva').textContent = 'kr ' + fmt(mva);
-    document.getElementById('totalInklMva').textContent = 'kr ' + fmt(total + mva);
-
+    regnUtTotal();
     document.getElementById('resultat').classList.add('aktiv');
+  }
+
+  function lesTabellData() {
+    const utstyr = [];
+    document.querySelectorAll('#utstyrKropp tr').forEach(tr => {
+      const [beskrivelseEl, antallEl, prisEl] = tr.querySelectorAll('input');
+      if (!beskrivelseEl.value.trim() && !antallEl.value && !prisEl.value) return;
+      utstyr.push({
+        beskrivelse: beskrivelseEl.value.trim(),
+        antall: parseFloat(antallEl.value) || 0,
+        enhetspris: parseFloat(prisEl.value) || 0
+      });
+    });
+
+    const timer = [];
+    document.querySelectorAll('#timerKropp tr').forEach(tr => {
+      const [beskrivelseEl, timerEl, prisEl] = tr.querySelectorAll('input');
+      if (!beskrivelseEl.value.trim() && !timerEl.value && !prisEl.value) return;
+      timer.push({
+        beskrivelse: beskrivelseEl.value.trim(),
+        timer: parseFloat(timerEl.value) || 0,
+        timepris: parseFloat(prisEl.value) || 0
+      });
+    });
+
+    return { utstyr, timer };
   }
 
   async function lagreTilbud() {
     if (!aktivtTilbud) return;
-    const uPris = aktivtTilbud.utstyr.reduce((s, u) => s + u.antall * u.enhetspris, 0);
-    const tPris = aktivtTilbud.timer.reduce((s, t) => s + t.timer * t.timepris, 0);
+    const { utstyr, timer } = lesTabellData();
+    const uPris = utstyr.reduce((s, u) => s + u.antall * u.enhetspris, 0);
+    const tPris = timer.reduce((s, t) => s + t.timer * t.timepris, 0);
     const res = await fetch('/api/tilbud', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -843,8 +970,8 @@ Oppstart kan skje innen 2 uker etter bestilling, med estimert gjennomføringstid
         prosjektnavn: aktivtTilbud.prosjektnavn,
         kunde: aktivtTilbud.kunde,
         generert_tekst: aktivtTilbud.tekst,
-        utstyr: JSON.stringify(aktivtTilbud.utstyr),
-        timer: JSON.stringify(aktivtTilbud.timer),
+        utstyr: JSON.stringify(utstyr),
+        timer: JSON.stringify(timer),
         total_pris: uPris + tPris,
         status: 'utkast'
       })
