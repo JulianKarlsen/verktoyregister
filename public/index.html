@@ -3,7 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Tilbudsbygger</title>
+  <title>Kasomo Energy — Tilbudsbygger</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -468,14 +469,101 @@
       border-top: 1px solid #dde8dd;
       background: white;
     }
+
+    /* ── PDF MAL ── */
+    #pdf-mal {
+      display: none;
+      font-family: 'Segoe UI', Arial, sans-serif;
+      color: #1a1a1a;
+      background: white;
+    }
+
+    .pdf-side {
+      width: 210mm;
+      min-height: 297mm;
+      padding: 16mm 18mm 20mm;
+      background: white;
+    }
+
+    .pdf-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 10mm;
+      padding-bottom: 6mm;
+      border-bottom: 2px solid #2d5a3d;
+    }
+
+    .pdf-logo { height: 18mm; }
+
+    .pdf-meta { text-align: right; font-size: 9pt; color: #555; line-height: 1.6; }
+    .pdf-meta strong { font-size: 10pt; color: #1a1a1a; }
+
+    .pdf-tittel { font-size: 18pt; font-weight: 700; color: #182020; margin-bottom: 1mm; }
+    .pdf-kunde { font-size: 11pt; color: #4a5e4a; margin-bottom: 8mm; }
+
+    .pdf-tekst {
+      font-size: 9.5pt;
+      line-height: 1.65;
+      color: #2d3a2d;
+      margin-bottom: 8mm;
+      white-space: pre-wrap;
+    }
+
+    .pdf-seksjon { margin-bottom: 7mm; }
+
+    .pdf-seksjon-tittel {
+      font-size: 8.5pt;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: #2d5a3d;
+      margin-bottom: 2mm;
+      padding-bottom: 1.5mm;
+      border-bottom: 1px solid #cce8cc;
+    }
+
+    .pdf table { width: 100%; border-collapse: collapse; font-size: 9pt; }
+    .pdf th {
+      background: #f4f8f4;
+      padding: 2mm 3mm;
+      text-align: left;
+      font-weight: 700;
+      font-size: 8pt;
+      color: #4a5e4a;
+      border-bottom: 1px solid #dde8dd;
+    }
+
+    .pdf th.r, .pdf td.r { text-align: right; }
+
+    .pdf td { padding: 2mm 3mm; border-bottom: 1px solid #eef4ee; }
+
+    .pdf tr:last-child td { border-bottom: none; }
+
+    .pdf-totaler { margin-top: 4mm; margin-left: auto; width: 72mm; }
+
+    .pdf-totaler table { font-size: 9.5pt; }
+    .pdf-totaler td { padding: 1.5mm 3mm; border: none; }
+    .pdf-totaler .total-linje td { font-weight: 700; border-top: 2px solid #2d5a3d; color: #2d5a3d; font-size: 11pt; }
+
+    .pdf-footer {
+      margin-top: auto;
+      padding-top: 6mm;
+      border-top: 1px solid #dde8dd;
+      font-size: 8pt;
+      color: #888;
+      display: flex;
+      justify-content: space-between;
+      margin-top: 12mm;
+    }
   </style>
 </head>
 <body>
 
 <div class="topbar">
   <div class="topbar-logo">
-    <div class="logo-circle">T</div>
-    Tilbudsbygger
+    <img src="/kasomo-ikon.png" style="height:34px; width:34px; object-fit:contain;">
+    <span style="font-weight:700; letter-spacing:0.08em;">KASOMO <span style="font-weight:400; opacity:0.75;">ENERGY</span></span>
   </div>
   <div class="topbar-spacer"></div>
   <div class="topbar-actions">
@@ -580,6 +668,7 @@
               </div>
               <div style="display:flex; gap:0.75rem; flex-wrap:wrap;">
                 <button class="btn-secondary btn-sm" onclick="nullstill()">Nytt tilbud</button>
+                <button class="btn-secondary btn-sm" onclick="lastNedPDF()">Last ned PDF</button>
                 <button class="btn-primary btn-sm" onclick="lagreTilbud()">Lagre tilbud</button>
               </div>
             </div>
@@ -722,6 +811,54 @@
       <button class="btn-danger" onclick="slettFraModal()">Slett tilbud</button>
     </div>
     <input type="hidden" id="modalId">
+  </div>
+</div>
+
+<!-- PDF MAL (skjult) -->
+<div id="pdf-mal">
+  <div class="pdf-side pdf">
+    <div class="pdf-header">
+      <img src="/kasomo-logo.png" class="pdf-logo">
+      <div class="pdf-meta">
+        <strong id="pdf-prosjekt"></strong><br>
+        Kunde: <span id="pdf-kunde"></span><br>
+        Dato: <span id="pdf-dato"></span><br>
+        Tilbudsnr: <span id="pdf-nr"></span>
+      </div>
+    </div>
+
+    <div class="pdf-tittel" id="pdf-tittel"></div>
+    <div class="pdf-kunde" id="pdf-kundelinje"></div>
+    <div class="pdf-tekst" id="pdf-tekst"></div>
+
+    <div class="pdf-seksjon">
+      <div class="pdf-seksjon-tittel">Utstyr og materiell</div>
+      <table>
+        <thead><tr><th>Beskrivelse</th><th>Antall</th><th class="r">Enhetspris</th><th class="r">Sum</th></tr></thead>
+        <tbody id="pdf-utstyr"></tbody>
+      </table>
+    </div>
+
+    <div class="pdf-seksjon">
+      <div class="pdf-seksjon-tittel">Timer</div>
+      <table>
+        <thead><tr><th>Arbeidstype</th><th class="r">Timer</th><th class="r">Timepris</th><th class="r">Sum</th></tr></thead>
+        <tbody id="pdf-timer"></tbody>
+      </table>
+    </div>
+
+    <div class="pdf-totaler">
+      <table>
+        <tr><td>Subtotal eksl. mva</td><td class="r" id="pdf-subtotal"></td></tr>
+        <tr><td>MVA 25%</td><td class="r" id="pdf-mva"></td></tr>
+        <tr class="total-linje"><td>Total inkl. mva</td><td class="r" id="pdf-total"></td></tr>
+      </table>
+    </div>
+
+    <div class="pdf-footer">
+      <span>Kasomo Energy AS &nbsp;|&nbsp; post@kasomoenergy.no</span>
+      <span>Dette tilbudet er gyldig i 30 dager</span>
+    </div>
   </div>
 </div>
 
@@ -982,6 +1119,59 @@ Oppstart kan skje innen 2 uker etter bestilling, med estimert gjennomføringstid
       byttSide('liste', document.querySelectorAll('.nav-item')[2]);
       visToast('Tilbud lagret!');
     }
+  }
+
+  function lastNedPDF() {
+    const { utstyr, timer } = lesTabellData();
+    const uPris = utstyr.reduce((s, u) => s + u.antall * u.enhetspris, 0);
+    const tPris = timer.reduce((s, t) => s + t.timer * t.timepris, 0);
+    const total = uPris + tPris;
+    const mva = total * 0.25;
+    const dato = new Date().toLocaleDateString('nb-NO');
+    const nr = 'T-' + Date.now().toString().slice(-6);
+
+    document.getElementById('pdf-prosjekt').textContent = aktivtTilbud.prosjektnavn;
+    document.getElementById('pdf-tittel').textContent = aktivtTilbud.prosjektnavn;
+    document.getElementById('pdf-kunde').textContent = aktivtTilbud.kunde || '—';
+    document.getElementById('pdf-kundelinje').textContent = aktivtTilbud.kunde ? 'Kunde: ' + aktivtTilbud.kunde : '';
+    document.getElementById('pdf-tekst').textContent = aktivtTilbud.tekst || '';
+    document.getElementById('pdf-dato').textContent = dato;
+    document.getElementById('pdf-nr').textContent = nr;
+
+    document.getElementById('pdf-utstyr').innerHTML = utstyr.map(u => `
+      <tr>
+        <td>${esc(u.beskrivelse)}</td>
+        <td>${u.antall}</td>
+        <td class="r">kr ${fmt(u.enhetspris)}</td>
+        <td class="r">kr ${fmt(u.antall * u.enhetspris)}</td>
+      </tr>
+    `).join('');
+
+    document.getElementById('pdf-timer').innerHTML = timer.map(t => `
+      <tr>
+        <td>${esc(t.beskrivelse)}</td>
+        <td class="r">${t.timer}</td>
+        <td class="r">kr ${fmt(t.timepris)}</td>
+        <td class="r">kr ${fmt(t.timer * t.timepris)}</td>
+      </tr>
+    `).join('');
+
+    document.getElementById('pdf-subtotal').textContent = 'kr ' + fmt(total);
+    document.getElementById('pdf-mva').textContent = 'kr ' + fmt(mva);
+    document.getElementById('pdf-total').textContent = 'kr ' + fmt(total + mva);
+
+    const mal = document.getElementById('pdf-mal');
+    mal.style.display = 'block';
+
+    html2pdf().set({
+      margin: 0,
+      filename: `Tilbud-${aktivtTilbud.prosjektnavn.replace(/[^a-zA-Z0-9]/g, '-')}-${dato}.pdf`,
+      image: { type: 'jpeg', quality: 0.98 },
+      html2canvas: { scale: 2, useCORS: true },
+      jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+    }).from(mal).save().then(() => {
+      mal.style.display = 'none';
+    });
   }
 
   function nullstill() {
